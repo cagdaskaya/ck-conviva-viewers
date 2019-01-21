@@ -1,0 +1,10 @@
+{% extends 'base.jinja2' %}
+
+{% block content %}
+<h1>{{ "User " + session['ip'] + " on " + session['isp'] + " with request_id " + request_id }}</h1>
+<p>{{ start_time }}</p>
+<p>{{ end_time }}</p>
+<p>{{ session['cdn'] }}</p>
+<p>{{ buff_ratio }}</p>
+<p>{{ abr }}</p>
+{% endblock %}
