@@ -20,7 +20,7 @@
         <tbody>
             <tr>
                 <th><a href="{{ url_for('session_function', session_id=session_id) }}">{{ session['streamUrl'].split('=')[1] }}</a></th>
-                <td> {{ session['startTimeMs'] }} </td>
+                <td> {{ prettify_date(session['startTimeMs']) }} </td>
                 <td> {{ 'tbd' }} </td>
                 <td> {{ 'tbd' }} </td>
                 <td> {{ 'tbd' }} </td>

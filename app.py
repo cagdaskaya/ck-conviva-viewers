@@ -1,7 +1,8 @@
 import requests
 import json
-import datetime
 from flask import Flask, render_template, request, url_for, redirect
+
+from helper import prettify_date
 
 url = "https://api.conviva.com/insights/2.4/viewer/views.json"
 querystring = {"viewer_id": "4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d"}
@@ -19,18 +20,20 @@ app = Flask(__name__)
 # '''
 #test
 
+
 @app.route('/')
 def home():
-    return render_template('home.jinja2', sessions=sessions)
+    return render_template('home.jinja2', sessions=sessions, prettify_date=prettify_date)
 
 
 @app.route('/session/<int:session_id>')
 def session_function(session_id):
     session = sessions.get(session_id)
     request_id = session['streamUrl'].split('=')[1]
-    start_time = datetime.datetime.fromtimestamp(session['startTimeMs'] / 1000, datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z")
-    end_time = datetime.datetime.fromtimestamp((session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs']) / 1000,
-                                               datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z")
+    start_time = prettify_date(session['startTimeMs'])
+    # start_time = datetime.datetime.fromtimestamp(session['startTimeMs'] / 1000, datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z")
+    # end_time = datetime.datetime.fromtimestamp((session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs']) / 1000,
+    #                                            datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z")
     buff_ratio = round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)
     abr = round(session['avgBitrateKbps'] / 1024, 2)
     if not session:
