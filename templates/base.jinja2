@@ -2,10 +2,10 @@
 <html>
     <head></head>
     <body>
-    <a href="{{ url_for('form') }}">Form</a>
-    <a href="{{ url_for('home', viewer_id="4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d") }}">LG</a>
-    <a href="{{ url_for('home', viewer_id="bc20ca6598829523efb90c82014bfc9fd6d3a160") }}">RK</a>
-    <a href="{{ url_for('home', viewer_id="7b683a4afb0cb5a84c0e0e40c107d42b609798d6") }}">CK</a>
+    <a href="{{ url_for('index_func') }}">Home</a>
+    <a href="{{ url_for('sessions_func', viewer_id="4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d") }}">LG</a>
+    <a href="{{ url_for('sessions_func', viewer_id="bc20ca6598829523efb90c82014bfc9fd6d3a160") }}">RK</a>
+    <a href="{{ url_for('sessions_func', viewer_id="7b683a4afb0cb5a84c0e0e40c107d42b609798d6") }}">CK</a>
     {% block content %}
 
     {% endblock %}
