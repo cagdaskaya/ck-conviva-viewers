@@ -1,0 +1,9 @@
+{% extends 'base.jinja2' %}
+
+{% block content %}
+<h1>Enter viewer ID</h1>
+<form action="/sessions" method="POST">
+    <input name="viewer_id">
+    <input type="submit" value="viewer_id">
+</form>
+{% endblock %}
