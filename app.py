@@ -1,35 +1,51 @@
 import requests
 import json
-# import datetime
 from flask import Flask, render_template, request, url_for, redirect
 from helper import prettify_date, prettify_time
 
 
-# '''
-
-def api_query(viewer_id="4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d"):
-    url = "https://api.conviva.com/insights/2.4/viewer/views.json"
-    querystring = {
-        "viewer_id": viewer_id,
-        "account": "f5095ff483b5a703a5f6247daf180f9a9f93aa1b"
-    }
+def accounts_query():
+    related = {}
+    url = "https://api.conviva.com/insights/2.4/accounts.json"
     headers = {
         'Authorization': "Basic ***REMOVED***",
         'cache-control': "no-cache",
     }
 
-    response = requests.request("GET", url, headers=headers, params=querystring)
-    sessions_list = json.loads(response.text)['sessions']  # list
-    sessions_dict = {n: s for n, s in enumerate(sessions_list)}  # dict
-    return sessions_dict
+    response = json.loads(requests.request("GET", url, headers=headers).text)['accounts']
+    related['NowTV'] = response['c3.BSkyB-NowTV']
+    related['SkyGo'] = response['c3.BSkyB']
+    return related
+
+
+def api_query(viewer_id):
+    accounts = accounts_query()
+    for k, v in accounts.items():
+        url = "https://api.conviva.com/insights/2.4/viewer/views.json"
+        querystring = {
+            "viewer_id": viewer_id,
+            "account": v
+        }
+        headers = {
+            'Authorization': "Basic ***REMOVED***",
+            'cache-control': "no-cache",
+        }
+
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        sessions_list = json.loads(response.text)['sessions']  # list
+        if sessions_list:
+            sessions_dict = {n: s for n, s in enumerate(sessions_list)}  # dict
+            return sessions_dict, k
+    else:
+        return {}, 'no'
 
 
 app = Flask(__name__)
 
 
 @app.route('/')
-def form():
-    return render_template('create.jinja2')
+def index_func():
+    return render_template('index.jinja2')
 
 
 # This route will be arrived at looking like this:
@@ -38,16 +54,15 @@ def form():
 @app.route('/sessions', methods=['POST'])
 def create():
     viewer_id = request.form.get('viewer_id')
-    # print(viewer_id)
-    return redirect(url_for('home', viewer_id=viewer_id))
+    return redirect(url_for('sessions_func', viewer_id=viewer_id))
 
 
 @app.route('/sessions/<string:viewer_id>')
-def home(viewer_id="4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d"):
+def sessions_func(viewer_id):
     global sessions
-    sessions = api_query(viewer_id)
-    return render_template('home.jinja2', sessions=sessions, prettify_date=prettify_date, prettify_time=prettify_time, round=round,
-                           viewer_id=viewer_id, len=len)
+    sessions, acct = api_query(viewer_id)
+    return render_template('sessions.jinja2', sessions=sessions, prettify_date=prettify_date, prettify_time=prettify_time, round=round,
+                           viewer_id=viewer_id, len=len, acct=acct)
 
 
 @app.route('/session/<int:session_id>')
@@ -69,4 +84,4 @@ def session_function(session_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
-# '''
+
