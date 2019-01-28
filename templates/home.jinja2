@@ -1,31 +1,34 @@
 {% extends 'base.jinja2' %}
 
 {% block content %}
-<h1>Viewer sessions</h1>
+<h1>Viewer sessions: {{ viewer_id }}</h1>
 
 <table border = 1>
     <thead>
         <tr>
-            <th>Request ID</th>
+            <th>Request ID / c3.ri</th>
             <th>Start Time</th>
             <th>End Time</th>
             <th>Playing Time</th>
-            <th>CDN</th>
             <th>Rebuff</th>
             <th>Average Bits</th>
+            <th>CDN</th>
+            <th>OS / Browser</th>
             <th>Asset Name</th>
         </tr>
     </thead>
     {% for session_id, session in sessions.items() %}
         <tbody>
             <tr>
-                <th><a href="{{ url_for('session_function', session_id=session_id) }}">{{ session['streamUrl'].split('=')[1] }}</a></th>
+                <td><a href="{{ url_for('session_function', session_id=session_id) }}">{{ (session['streamUrl'].split('=')[1]) if len(session['streamUrl'].split('=')) > 1 else 'no c3.ri' }}</a></td>
                 <td> {{ prettify_date(session['startTimeMs']) }} </td>
                 <td> {{ prettify_date(session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs']) }} </td>
                 <td> {{ prettify_time(session['playTimeMs']) }} </td>
-                <td> {{ session['cdn'] }} </td>
-                <td> {{ round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)|string + ' %' }} </td>
+                <td> {{ (round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)|string + ' % | ' + session['numBuffEvts']|string) if (session['playTimeMs'] +
+                session['buffTimeMs']) > 0 else 'no playback' }} </td>
                 <td> {{ round(session['avgBitrateKbps'] / 1024, 2)|string + ' Mbps' }} </td>
+                <td> {{ session['cdn'] }} </td>
+                <td> {{ session['os'] + ' | ' + session['browser'] }} </td>
                 <td> {{ session['asset'] }} </td>
             </tr>
         </tbody>
