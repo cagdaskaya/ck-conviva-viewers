@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{ 'Session Details' }}</h1>
+
+<div>
+  <table border = 1>
+    <thead>
+      <tr>
+        <th>Request ID / c3.ri</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Playing Time</th>
+        <th>Rebuff</th>
+        <th>Average Bits</th>
+        <th>CDN</th>
+        <th>Asset Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th> {{ request_id }} </th>
+        <td> {{ start_time }} </td>
+        <td> {{ end_time }} </td>
+        <td> {{ play_time }} </td>
+        <td> {{ buff_ratio|string + ' % | ' + session['numBuffEvts']|string }} </td>
+        <td> {{ abr|string + ' Mbps' }} </td>
+        <td> {{ session['cdn'] }} </td>
+        <td> {{ session['asset'] }} </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div>
+  <p>{{ 'Percentage completed: ' + (session['percentWatched']|string + ' %') if session['tags']['c3.video.isLive'] == 'F' else 'Percentage completed: Linear' }}</p>
+  <p>{{ 'Rebuff : ' + buff_ratio|string + ' % out of ' + session['numBuffEvts']|string + ' event' + ('s' if session['numBuffEvts'] > 1 else '') }}</p>
+  <p>{{ 'AvgBits: ' + abr|string + ' Mbps' }}</p>
+  <p>{{ 'VST    : ' + vst|string + ' sec' }}</p>
+  <p>{{ 'Device Operating System: ' + session['os'] }}</p>
+  <p>{{ 'Browser Name: ' + session['browser'] }}</p>
+  <p>{{ 'Stream URL: ' + session['streamUrl'] }}</p>
+  <p>{{ 'Location: ' + session['city'] + ', ' + session['state'] + ', ' + session['country'] }}</p>
+  <p>{{ 'ISP & ASN: ' + session['isp'] + ', ' + session['asnName'] }}</p>
+  <p>{{ 'CDN: ' + session['cdn'] }}</p>
+  <p>{{ 'IP: ' + session['ip'] }}</p>
+  <p>{{ 'Session Tags' }}</p>
+</div>
+
+<div>
+  {% for key, value in tags.items() %}
+  <p>{{ '....' + key + ': ' + value }}</p>
+  {% endfor %}
+</div>
+
+{% endblock %}

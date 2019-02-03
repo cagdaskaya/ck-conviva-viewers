@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="lead container-fluid">
+  <p>{{ acct }} sessions found for {{ viewer_id }}</p>
+</div>
+
+<div class="card-deck bg-light">
+  <div class="card">
+    <div class="card-header">Total</div>
+    <div class="card-body">
+      <p class="card-text"><span class="text-muted">Assets: </span>{{ len(asset_set) }}</p>
+      <p class="card-text">
+        <span class="text-muted">Plays: </span>{{ len(sessions) }} |
+        <span class="text-muted">VSF: </span>{{ len(vsfs) }} |
+        <span class="text-muted">EBVS: </span>{{ len(ebvs) }} |
+        <span class="text-muted">VPF: </span>n/a
+      </p>
+      <p class="card-text"><span class="text-muted">Play Duration: </span>{{ play_d }}</p>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">Device</div>
+    <div class="card-body">
+      {% for i in os_p %}
+      <p class="card-text">
+        {{ i[0] }}% {{ i[1] }}
+      </p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header">Location</div>
+    <div class="card-body">
+      <p class="card-text">
+      {% for i in loc_p %}
+        <small class="text-muted">
+          {{ i[0] }}% {{ i[1] }} |
+        </small>
+      {% endfor %}
+      </p>
+    </div>
+    <div class="card-header">ISP</div>
+    <div class="card-body">
+      <p class="card-text">
+      {% for i in isp_p %}
+        <small class="text-muted">
+          {{ i[0] }}% {{ i[1] }} |
+        </small>
+      {% endfor %}
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="bg-light container-fluid">
+  <table class="table table-sm table-hover">
+    <thead>
+      <tr>
+        <th scope="col">c3.ri</th>
+        <th scope="col">Start T.</th>
+        <th scope="col">End T.</th>
+        <th scope="col">Play D.</th>
+        <th scope="col">Buff. R.</th>
+        <th scope="col">ABR</th>
+        <th scope="col">CDN</th>
+        <th scope="col">OS</th>
+        <th scope="col">Asset</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for session_id, session in sessions.items() %}
+      <tr data-toggle="collapse" data-target="#collapse{{session_id}}">
+        <th scope="row">
+          <a href="{{ url_for('session_function', session_id=session_id) }}">
+            {{ (session['streamUrl'].split('c3.ri=')[1]) if len(session['streamUrl'].split('c3.ri=')) > 1 else 'no c3.ri' }}
+          </a>
+        </th>
+        <td> {{ prettify_date(session['startTimeMs']) }} </td>
+        <td> {{ prettify_date(session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs']) }} </td>
+        <td> {{ prettify_time(session['playTimeMs']) }} </td>
+        <td> {{ (round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)|string + ' % | ' + session['numBuffEvts']|string) if (session['playTimeMs'] + session['buffTimeMs']) > 0 else 'no playback' }} </td>
+        <td> {{ round(session['avgBitrateKbps'] / 1024, 2)|string + ' Mbps' }} </td>
+        <td> {{ session['cdn'] }} </td>
+        <td> {{ session['os'] + ' | ' + session['browser'] }} </td>
+        <td> {{ session['asset'] }} </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="collapse" id="collapse{{session_id}}">
+          <p class="font-italic">{{ '% complete: ' + (session['percentWatched']|string + '%') if session['tags']['c3.video.isLive'] == 'F' else '% complete: Linear' }}</p>
+          <p><span class="text-black-50">Device Operating System:</span><br>{{ session['os'] }}</p>
+          <p><span class="text-black-50">Browser Name:</span><br>{{ session['browser'] }}</p>
+          <p><span class="text-black-50">Stream URL:</span><br>{{ session['streamUrl'] }}</p>
+          <p><span class="text-black-50">Location:</span><br>{{ session['city'] + ', ' + session['state'] + ', ' + session['country'] }}</p>
+          <p><span class="text-black-50">ISP & ASN:</span><br>{{ session['isp'] + ', ' + session['asnName'] }}</p>
+          <p><span class="text-black-50">CDN:</span><br>{{ session['cdn'] }}</p>
+          <p><span class="text-black-50">IP:</span><br>{{ session['ip'] }}</p>
+        </td>
+        <td colspan="2" class="collapse" id="collapse{{session_id}}">
+          <p class="font-italic">{{ 'VST: ' + (round(session['joinTimeMs'] / 1000, 2))|string + ' sec' }}</p>
+          <p><span class="text-black-50">Session Tags:</span></p>
+          {% for key, value in list(session['tags'].items())[::4] %}
+          <p><span class="font-weight-light">{{ key + ":" }}</span><br>{{ value }}</p>
+          {% endfor %}
+        </td>
+        <td colspan="2" class="collapse" id="collapse{{session_id}}">
+          <p class="font-italic">{{ 'VSF: ' + session['isPlayStartFail']|string }}</p>
+          <br>
+          <br>
+          {% for key, value in list(session['tags'].items())[1::4] %}
+          <p><span class="font-weight-light">{{ key + ":" }}</span><br>{{ value }}</p>
+          {% endfor %}
+        </td>
+        <td colspan="2" class="collapse" id="collapse{{session_id}}">
+          <br>
+          <br>
+          <br>
+          <br>
+          {% for key, value in list(session['tags'].items())[2::4] %}
+          <p><span class="font-weight-light">{{ key + ":" }}</span><br>{{ value }}</p>
+          {% endfor %}
+        <td colspan="1" class="collapse" id="collapse{{session_id}}">
+          <br>
+          <br>
+          <br>
+          <br>
+          {% for key, value in list(session['tags'].items())[3::4] %}
+          <p><span class="font-weight-light">{{ key + ":" }}</span><br>{{ value }}</p>
+          {% endfor %}
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}
