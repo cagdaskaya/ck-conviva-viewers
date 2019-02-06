@@ -35,6 +35,8 @@ def sessions_func(viewer_id):
     :return:    renders sessions page of flask template
     """
     global sessions
+    find_by = request.args.get('find_by')
+    find = request.args.get('find')
     sessions, acct = api_query(viewer_id)
     session_list = sessions.values()
     asset_set = v_setter(session_list, 'asset')
@@ -45,8 +47,8 @@ def sessions_func(viewer_id):
     cdn_p = calc_percentages(session_list, 'cdn')
     loc_p = calc_percentages(session_list, 'city')
     isp_p = calc_percentages(session_list, 'isp')
-    return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p,
-                           prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p,
+    return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find=find,
+                           prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, find_by=find_by,
                            len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p)
 
 
@@ -73,29 +75,30 @@ def session_function(viewer_id, session_id):
                            buff_ratio=buff_ratio, abr=abr, play_time=play_time, vst=vst, tags=tags, viewer_id=viewer_id)
 
 
-@app.route('/test/<string:viewer_id>')
-def test_func(viewer_id):
-    """
-    test
-    :param viewer_id: string
-    :return:    renders sessions page of flask template
-    """
-    global sessions
-    find_by = request.args.get('find_by')
-    sessions, acct = api_query(viewer_id)
-    session_list = sessions.values()
-    asset_set = v_setter(session_list, 'asset')
-    vsfs = [i for i in v_lister(session_list, 'isPlayStartFail') if i]
-    ebvs = [d['asn'] for d in session_list if (d['playTimeMs'] == 0 and not d['isPlayStartFail'])]
-    play_d = prettify_time(v_adder(session_list, 'playTimeMs'))
-    os_p = calc_percentages(session_list, 'os')
-    cdn_p = calc_percentages(session_list, 'cdn')
-    loc_p = calc_percentages(session_list, 'city')
-    isp_p = calc_percentages(session_list, 'isp')
-    return render_template('test.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find_by=find_by,
-                           prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, type=type,
-                           len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p)
-
-
+# @app.route('/test/<string:viewer_id>')
+# def test_func(viewer_id):
+#     """
+#     test
+#     :param viewer_id: string
+#     :return:    renders sessions page of flask template
+#     """
+#     global sessions
+#     find_by = request.args.get('find_by')
+#     find = request.args.get('find')
+#     sessions, acct = api_query(viewer_id)
+#     session_list = sessions.values()
+#     asset_set = v_setter(session_list, 'asset')
+#     vsfs = [i for i in v_lister(session_list, 'isPlayStartFail') if i]
+#     ebvs = [d['asn'] for d in session_list if (d['playTimeMs'] == 0 and not d['isPlayStartFail'])]
+#     play_d = prettify_time(v_adder(session_list, 'playTimeMs'))
+#     os_p = calc_percentages(session_list, 'os')
+#     cdn_p = calc_percentages(session_list, 'cdn')
+#     loc_p = calc_percentages(session_list, 'city')
+#     isp_p = calc_percentages(session_list, 'isp')
+#     return render_template('test.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find_by=find_by,
+#                            prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, type=type,
+#                            len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p, find=find)
+#
+#
 if __name__ == '__main__':
     app.run(debug=True)

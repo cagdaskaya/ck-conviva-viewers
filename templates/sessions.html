@@ -21,37 +21,61 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-header">Device</div>
+    <div class="card-header">Device<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
         {% for i in os_p %}
-        <small>{{ i[0] }}% <span class="text-muted">{{ i[1] }}</span> | </small>
+          <small>{{ i[0] }}%
+              <span class="text-muted">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='os', find=i[1]) }}">
+                      {{ i[1] }}
+                  </a>
+              </span>|
+          </small>
         {% endfor %}
       </p>
     </div>
-    <div class="card-header">CDN</div>
+    <div class="card-header">CDN<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
         {% for i in cdn_p %}
-        <small>{{ i[0] }}% <span class="text-muted">{{ i[1] }}</span> | </small>
+          <small>{{ i[0] }}%
+              <span class="text-muted">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='cdn', find=i[1]) }}">
+                      {{ i[1] }}
+                  </a>
+              </span>|
+          </small>
         {% endfor %}
       </p>
     </div>
   </div>
   <div class="card">
-    <div class="card-header">Location</div>
+    <div class="card-header">Location<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
         {% for i in loc_p %}
-        <small>{{ i[0] }}% <span class="text-muted">{{ i[1] }}</span> | </small>
+          <small>{{ i[0] }}%
+              <span class="text-muted">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='city', find=i[1]) }}">
+                      {{ i[1] }}
+                  </a>
+              </span>|
+          </small>
         {% endfor %}
       </p>
     </div>
-    <div class="card-header">ISP</div>
+      <div class="card-header">ISP<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
         {% for i in isp_p %}
-        <small>{{ i[0] }}% <span class="text-muted">{{ i[1] }}</span> | </small>
+          <small>{{ i[0] }}%
+              <span class="text-muted">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='isp', find=i[1]) }}">
+                      {{ i[1] }}
+                  </a>
+              </span>|
+          </small>
         {% endfor %}
       </p>
     </div>
@@ -76,7 +100,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for session_id, session in sessions.items() %}
+      {% for session_id, session in sessions.items() if session.get(find_by) == find %}
       <tr>
         <th scope="row">
           <div class="d-flex">
