@@ -3,7 +3,9 @@
 {% block content %}
 
 <div class="lead container-fluid">
-  <p>{{ acct }} sessions found for {{ viewer_id }}</p>
+  <p>FIND_BY = {{ find_by }}</p>
+  <p>FIND_BY = {{ type(find_by) }}</p>
+  <p>TEST PAGE: {{ acct }} sessions found for {{ viewer_id }}</p>
 </div>
 
 <div class="card-deck bg-light">
@@ -76,7 +78,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for session_id, session in sessions.items() %}
+      {% for session_id, session in sessions.items() if find_by %}
       <tr>
         <th scope="row">
           <div class="d-flex">

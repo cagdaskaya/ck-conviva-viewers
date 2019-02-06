@@ -10,7 +10,7 @@
   </head>
   <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand">Conviva</a>
+      <a class="navbar-brand" href="{{ url_for('test_func', viewer_id='4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d', find_by='session[\'cdn\'] == \'LIMELIGHT\'') }}">TEST</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -23,13 +23,16 @@
           <li class="nav-item">
             <a class="nav-link" href="{{ url_for('sessions_func', viewer_id='4f18f7b5e8e6bcc8fbed5448002ea0ee5c70dc0d') }}">LG</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('sessions_func', viewer_id='bc20ca6598829523efb90c82014bfc9fd6d3a160') }}">RK</a>
+          </li>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Viewers
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{{ url_for('sessions_func', viewer_id='bc20ca6598829523efb90c82014bfc9fd6d3a160') }}">RK</a>
               <a class="dropdown-item" href="{{ url_for('sessions_func', viewer_id='7b683a4afb0cb5a84c0e0e40c107d42b609798d6') }}">CK</a>
+              <a class="dropdown-item" href="{{ url_for('sessions_func', viewer_id='0f67e77b0e4195ae7dca46b56575c1e8d228aa5c') }}">DB</a>
               <div class="dropdown-divider"></div>
             </div>
           </li>
