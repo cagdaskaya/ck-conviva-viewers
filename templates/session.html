@@ -2,20 +2,23 @@
 
 {% block content %}
 
-<h1>{{ 'Session Details' }}</h1>
+<div class="lead container-fluid">
+  <p>{{ 'Session Details' }}</p>
+</div>
 
-<div>
-  <table border = 1>
+<div class="bg-light container-fluid">
+  <table class="table table-sm table-hover">
     <thead>
       <tr>
-        <th>Request ID / c3.ri</th>
-        <th>Start Time</th>
-        <th>End Time</th>
-        <th>Playing Time</th>
-        <th>Rebuff</th>
-        <th>Average Bits</th>
-        <th>CDN</th>
-        <th>Asset Name</th>
+        <th scope="col">c3.ri</th>
+        <th scope="col">Start T.</th>
+        <th scope="col">End T.</th>
+        <th scope="col">Play D.</th>
+        <th scope="col">Buff. R.</th>
+        <th scope="col">ABR</th>
+        <th scope="col">CDN</th>
+        <th scope="col">OS | Br. </th>
+        <th scope="col">Asset</th>
       </tr>
     </thead>
     <tbody>
@@ -27,31 +30,45 @@
         <td> {{ buff_ratio|string + ' % | ' + session['numBuffEvts']|string }} </td>
         <td> {{ abr|string + ' Mbps' }} </td>
         <td> {{ session['cdn'] }} </td>
+        <td> {{ session['os'] + ' | ' + session['browser'] }} </td>
         <td> {{ session['asset'] }} </td>
       </tr>
     </tbody>
   </table>
 </div>
 
-<div>
-  <p>{{ 'Percentage completed: ' + (session['percentWatched']|string + ' %') if session['tags']['c3.video.isLive'] == 'F' else 'Percentage completed: Linear' }}</p>
-  <p>{{ 'Rebuff : ' + buff_ratio|string + ' % out of ' + session['numBuffEvts']|string + ' event' + ('s' if session['numBuffEvts'] > 1 else '') }}</p>
-  <p>{{ 'AvgBits: ' + abr|string + ' Mbps' }}</p>
-  <p>{{ 'VST    : ' + vst|string + ' sec' }}</p>
-  <p>{{ 'Device Operating System: ' + session['os'] }}</p>
-  <p>{{ 'Browser Name: ' + session['browser'] }}</p>
-  <p>{{ 'Stream URL: ' + session['streamUrl'] }}</p>
-  <p>{{ 'Location: ' + session['city'] + ', ' + session['state'] + ', ' + session['country'] }}</p>
-  <p>{{ 'ISP & ASN: ' + session['isp'] + ', ' + session['asnName'] }}</p>
-  <p>{{ 'CDN: ' + session['cdn'] }}</p>
-  <p>{{ 'IP: ' + session['ip'] }}</p>
-  <p>{{ 'Session Tags' }}</p>
-</div>
-
-<div>
-  {% for key, value in tags.items() %}
-  <p>{{ '....' + key + ': ' + value }}</p>
-  {% endfor %}
+<div class="card-group container-fluid">
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">More info...</h5>
+      <div class="card-text">
+        <p><span class="font-weight-bold text-black-50">% complete: </span>{{ (session['percentWatched']|string + ' %') if session['tags']['c3.video.isLive'] == 'F' else 'Linear' }}</p>
+        <p><span class="font-weight-bold text-black-50">Rebuff : </span>{{ buff_ratio|string + ' % out of ' + session['numBuffEvts']|string + ' event' + ('s' if session['numBuffEvts'] > 1 else '') }}</p>
+        <p><span class="font-weight-bold text-black-50">AvgBits: </span>{{ abr|string + ' Mbps' }}</p>
+        <p><span class="font-weight-bold text-black-50">VST: </span>{{ vst|string + ' sec' }}</p>
+        <p><span class="font-weight-bold text-black-50">VSF: </span>{{ session['isPlayStartFail']|string }}</p>
+        <p><span class="font-weight-bold text-black-50">EBVS: </span>{{ (session['playTimeMs'] == 0 and not session['isPlayStartFail']) }}</p>
+        <p><span class="font-weight-bold text-black-50">Device Operating System: </span>{{ session['os'] }}</p>
+        <p><span class="font-weight-bold text-black-50">Browser Name: </span>{{ session['browser'] }}</p>
+        <p><span class="font-weight-bold text-black-50">Stream URL: </span>{{ session['streamUrl'] }}</p>
+        <p><span class="font-weight-bold text-black-50">Location: </span>{{ session['city'] + ', ' + session['state'] + ', ' + session['country'] }}</p>
+        <p><span class="font-weight-bold text-black-50">ISP & ASN: </span>{{ session['isp'] + ', ' + session['asnName'] }}</p>
+        <p><span class="font-weight-bold text-black-50">CDN: </span>{{ session['cdn'] }}</p>
+        <p><span class="font-weight-bold text-black-50">IP: </span>{{ session['ip'] }}</p>
+        <p><span class="font-weight-bold text-black-50">avgRenQual: </span>{{ session['avgRenQual'] }}</p>
+        <p><span class="font-weight-bold text-black-50">hasEnded: </span>{{ session['hasEnded'] }}</p>
+        <p><span class="font-weight-bold text-black-50">viewId: </span>{{ session['viewId'] }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">Session Tags:</h5>
+      {% for key, value in tags.items() %}
+      <p class="card-text"><span class="font-weight-bold text-black-50">{{ key + ": " }}</span>{{ value if value else "Unknown" }}</p>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 
 {% endblock %}
