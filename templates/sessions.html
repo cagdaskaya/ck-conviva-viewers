@@ -105,6 +105,7 @@
     <thead>
       <tr>
         <th scope="col">c3.ri</th>
+        <th scope="col">IP</th>
         <th scope="col">Start T.</th>
         <th scope="col">End T.</th>
         <th scope="col">Play D.</th>
@@ -201,6 +202,7 @@
             </div>
           </div>
         </th>
+        <td> {{ session['ip'] }} </td>
         <td> {{ prettify_date(session['startTimeMs']) }} </td>
         <td> {{ prettify_date(session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs']) }} </td>
         <td> {{ prettify_time(session['playTimeMs']) }} </td>
