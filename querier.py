@@ -5,7 +5,8 @@ import json
 # username = input('Conviva username: ')
 # password = input('Conviva password: ')
 # credentials = username + ':' + password
-# ***REMOVED*** base64.b64encode(bytes(credentials, 'ascii')).decode('ascii')
+# credentials = input('Conviva username: ') + ':' + input('Conviva password: ')
+# ***REMOVED*** base64.b64encode(bytes(credentials, 'utf-8')).decode('ascii')
 ***REMOVED***'
 headers = {
     'Cache-Control': 'no-cache',

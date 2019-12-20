@@ -47,9 +47,10 @@ def sessions_func(viewer_id):
     cdn_p = calc_percentages(session_list, 'cdn')
     loc_p = calc_percentages(session_list, 'city')
     isp_p = calc_percentages(session_list, 'isp')
+    ip_p = calc_percentages(session_list, 'ip')
     return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find=find,
                            prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, find_by=find_by,
-                           len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p)
+                           len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p, ip_p=ip_p)
 
 
 @app.route('/session/<string:viewer_id>/<int:session_id>')
@@ -75,8 +76,9 @@ def session_function(viewer_id, session_id):
                            buff_ratio=buff_ratio, abr=abr, play_time=play_time, vst=vst, tags=tags, viewer_id=viewer_id)
 
 
-# @app.route('/test/<string:viewer_id>')
-# def test_func(viewer_id):
+@app.route('/test')
+def test_func():
+    return render_template('test.html')
 #     """
 #     test
 #     :param viewer_id: string
