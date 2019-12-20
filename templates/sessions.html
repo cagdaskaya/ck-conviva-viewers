@@ -12,22 +12,24 @@
     <div class="card-body">
       <p class="card-text">
         <span class="text-muted">Assets: </span>{{ len(asset_set) }} |
-        <span class="text-muted">Play Duration: </span>{{ play_d }}
+        <span class="text-muted">Play Duration: </span>{{ play_d }} |
+        <span class="text-muted">Buff Duration: </span>{{ buff_d }}
       </p>
       <p class="card-text">
         <span class="text-muted">Plays: </span>{{ len(sessions) }} |
+        <span class="text-muted">Buffs: </span>{{ buffs }} |
         <span class="text-muted">VSF: </span>{{ len(vsfs) }} |
         <span class="text-muted">EBVS: </span>{{ len(ebvs) }} |
         <span class="text-muted">VPF: </span>n/a
       </p>
     </div>
-    <div class="card-header">IP<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
+    <div class="card-header">Device<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
-        {% for i in ip_p %}
+        {% for i in os_p %}
           <small>{{ i[0] }}%
               <span class="text-muted">
-                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='ip', find=i[1]) }}">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='os', find=i[1]) }}">
                       {{ i[1] }}
                   </a>
               </span>|
@@ -37,13 +39,13 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-header">Device<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
+    <div class="card-header">ISP<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
-        {% for i in os_p %}
+        {% for i in isp_p %}
           <small>{{ i[0] }}%
               <span class="text-muted">
-                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='os', find=i[1]) }}">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='isp', find=i[1]) }}">
                       {{ i[1] }}
                   </a>
               </span>|
@@ -67,13 +69,13 @@
     </div>
   </div>
   <div class="card">
-    <div class="card-header">Location<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
+    <div class="card-header">IP<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
-        {% for i in loc_p %}
+        {% for i in ip_p %}
           <small>{{ i[0] }}%
               <span class="text-muted">
-                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='city', find=i[1]) }}">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='ip', find=i[1]) }}">
                       {{ i[1] }}
                   </a>
               </span>|
@@ -81,13 +83,13 @@
         {% endfor %}
       </p>
     </div>
-    <div class="card-header">ISP<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
+    <div class="card-header">Location<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
-        {% for i in isp_p %}
+        {% for i in loc_p %}
           <small>{{ i[0] }}%
               <span class="text-muted">
-                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='isp', find=i[1]) }}">
+                  <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='city', find=i[1]) }}">
                       {{ i[1] }}
                   </a>
               </span>|

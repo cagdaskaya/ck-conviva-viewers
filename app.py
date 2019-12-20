@@ -43,13 +43,15 @@ def sessions_func(viewer_id):
     vsfs = [i for i in v_lister(session_list, 'isPlayStartFail') if i]
     ebvs = [d['asn'] for d in session_list if (d['playTimeMs'] == 0 and not d['isPlayStartFail'])]
     play_d = prettify_time(v_adder(session_list, 'playTimeMs'))
+    buff_d = prettify_time(v_adder(session_list, 'buffTimeMs'))
+    buffs = v_adder(session_list, 'numBuffEvts')
     os_p = calc_percentages(session_list, 'os')
     cdn_p = calc_percentages(session_list, 'cdn')
     loc_p = calc_percentages(session_list, 'city')
     isp_p = calc_percentages(session_list, 'isp')
     ip_p = calc_percentages(session_list, 'ip')
-    return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find=find,
-                           prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, find_by=find_by,
+    return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find=find, buff_d=buff_d,
+                           prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, find_by=find_by, buffs=buffs,
                            len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p, ip_p=ip_p)
 
 
