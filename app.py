@@ -52,7 +52,7 @@ def sessions_func(viewer_id):
     ip_p = calc_percentages(session_list, 'ip')
     return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find=find, buff_d=buff_d,
                            prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, find_by=find_by, buffs=buffs,
-                           len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p, ip_p=ip_p)
+                           len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p, ip_p=ip_p, str=str)
 
 
 @app.route('/session/<string:viewer_id>/<int:session_id>')

@@ -8,7 +8,7 @@
 
 <div class="card-deck bg-light">
   <div class="card">
-    <div class="card-header">Total</div>
+    <div class="card-header">Total<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
     <div class="card-body">
       <p class="card-text">
         <span class="text-muted">Assets: </span>{{ len(asset_set) }} |
@@ -18,7 +18,9 @@
       <p class="card-text">
         <span class="text-muted">Plays: </span>{{ len(sessions) }} |
         <span class="text-muted">Buffs: </span>{{ buffs }} |
-        <span class="text-muted">VSF: </span>{{ len(vsfs) }} |
+        <span class="text-muted">
+          <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='isPlayStartFail', find=True) }}">VSF: </a>
+        </span>{{ len(vsfs) }} |
         <span class="text-muted">EBVS: </span>{{ len(ebvs) }} |
         <span class="text-muted">VPF: </span>n/a
       </p>
@@ -111,15 +113,17 @@
         <th scope="col">Start T.</th>
         <th scope="col">End T.</th>
         <th scope="col">Play D.</th>
+        <th scope="col">Buff. D.</th>
         <th scope="col">Buff. R.</th>
         <th scope="col">ABR</th>
+        <th scope="col">VSF</th>
         <th scope="col">CDN</th>
-        <th scope="col">OS | Br. </th>
+        <th scope="col">OS</th>
         <th scope="col">Asset</th>
       </tr>
     </thead>
     <tbody>
-      {% for session_id, session in sessions.items() if session.get(find_by) == find %}
+      {% for session_id, session in sessions.items() if str(session.get(find_by)) == str(find) %}
       <tr>
         <th scope="row">
           <div class="d-flex">
@@ -208,10 +212,12 @@
         <td> {{ prettify_date(session['startTimeMs']) }} </td>
         <td> {{ prettify_date(session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs']) }} </td>
         <td> {{ prettify_time(session['playTimeMs']) }} </td>
+        <td> {{ prettify_time(session['buffTimeMs']) }} </td>
         <td> {{ (round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)|string + ' % | ' + session['numBuffEvts']|string) if (session['playTimeMs'] + session['buffTimeMs']) > 0 else 'no playback' }} </td>
         <td> {{ round(session['avgBitrateKbps'] / 1024, 2)|string + ' Mbps' }} </td>
+        <td> {{ session.get('isPlayStartFail') }} </td>
         <td> {{ session['cdn'] }} </td>
-        <td> {{ session['os'] + ' | ' + session['browser'] }} </td>
+        <td> {{ session['os'] }} </td>
         <td> {{ session['asset'] }} </td>
       </tr>
       {% endfor %}
