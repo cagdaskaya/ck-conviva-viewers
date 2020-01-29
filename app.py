@@ -41,18 +41,22 @@ def sessions_func(viewer_id):
     session_list = sessions.values()
     asset_set = v_setter(session_list, 'asset')
     vsfs = [i for i in v_lister(session_list, 'isPlayStartFail') if i]
+    vpfs = [i for i in v_lister(session_list, 'isPlaybackFail') if i]
     ebvs = [d['asn'] for d in session_list if (d['playTimeMs'] == 0 and not d['isPlayStartFail'])]
     play_d = prettify_time(v_adder(session_list, 'playTimeMs'))
     buff_d = prettify_time(v_adder(session_list, 'buffTimeMs'))
+    cbuff_d = prettify_time(v_adder(session_list, 'connInducedBuffTimeMs'))
     buffs = v_adder(session_list, 'numBuffEvts')
+    rsts = v_adder(session_list, 'restartCount')
     os_p = calc_percentages(session_list, 'os')
     cdn_p = calc_percentages(session_list, 'cdn')
     loc_p = calc_percentages(session_list, 'city')
     isp_p = calc_percentages(session_list, 'isp')
     ip_p = calc_percentages(session_list, 'ip')
-    return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, find=find, buff_d=buff_d,
-                           prettify_time=prettify_time, round=round, viewer_id=viewer_id, ebvs=ebvs, isp_p=isp_p, find_by=find_by, buffs=buffs,
-                           len=len, acct=acct, list=list, asset_set=asset_set, vsfs=vsfs, play_d=play_d, cdn_p=cdn_p, ip_p=ip_p, str=str)
+    return render_template('sessions.html', sessions=sessions, prettify_date=prettify_date, os_p=os_p, loc_p=loc_p, rsts=rsts,
+                           find=find, buff_d=buff_d, cbuff_d=cbuff_d, prettify_time=prettify_time, round=round, viewer_id=viewer_id,
+                           ebvs=ebvs, isp_p=isp_p, find_by=find_by, buffs=buffs, len=len, acct=acct, list=list, asset_set=asset_set,
+                           vsfs=vsfs, vpfs=vpfs, play_d=play_d, cdn_p=cdn_p, ip_p=ip_p,  str=str)
 
 
 @app.route('/session/<string:viewer_id>/<int:session_id>')
@@ -69,13 +73,18 @@ def session_function(viewer_id, session_id):
     start_time = prettify_date(session['startTimeMs'])
     end_time = prettify_date(session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs'])
     play_time = prettify_time(session['playTimeMs'])
+    buff_time = prettify_time(session['buffTimeMs'])
+    cbuff_time = prettify_time(session['connInducedBuffTimeMs'])
     buff_ratio = (round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)) if (session['playTimeMs'] + session['buffTimeMs']) > 0 else 'no_play'
+    cbuff_ratio = (round(100 * (session['connInducedBuffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)) if (session['playTimeMs'] + session['buffTimeMs']) > 0 else 'no_play'
     abr = round(session['avgBitrateKbps'] / 1024, 2)
     vst = round(session['joinTimeMs'] / 1000, 2)
+    vrt = round(session['restartTimeMs'] / 1000, 2)
     if not session:
         return render_template('404.html', message=f'A session with id {session_id} was not found.')
     return render_template('session.html', session=session, request_id=request_id, start_time=start_time, end_time=end_time,
-                           buff_ratio=buff_ratio, abr=abr, play_time=play_time, vst=vst, tags=tags, viewer_id=viewer_id)
+                           vrt=vrt, cbuff_ratio=cbuff_ratio, buff_ratio=buff_ratio, abr=abr, play_time=play_time, vst=vst,
+                           tags=tags, viewer_id=viewer_id, buff_time=buff_time, cbuff_time=cbuff_time)
 
 
 @app.route('/test')
