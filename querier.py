@@ -41,7 +41,7 @@ def api_query(viewer_id):
     # accounts = accounts_query()
     global accounts
     for k, v in accounts.items():
-        url = 'https://api.conviva.com/insights/2.4/viewer/views.json'
+        url = 'https://api.conviva.com/insights/2.1/viewer/views.json'
         querystring = {
             'viewer_id': viewer_id,
             'account': v

@@ -14,10 +14,9 @@
         <th scope="col">Start T.</th>
         <th scope="col">End T.</th>
         <th scope="col">Play D.</th>
+        <th scope="col">Buff. D.</th>
         <th scope="col">Buff. R.</th>
-        <th scope="col">ABR</th>
-        <th scope="col">CDN</th>
-        <th scope="col">OS | Br. </th>
+        <th scope="col">CI Buff. D.</th>
         <th scope="col">Asset</th>
       </tr>
     </thead>
@@ -27,10 +26,9 @@
         <td> {{ start_time }} </td>
         <td> {{ end_time }} </td>
         <td> {{ play_time }} </td>
+        <td> {{ buff_time }} </td>
         <td> {{ buff_ratio|string + ' % | ' + session['numBuffEvts']|string }} </td>
-        <td> {{ abr|string + ' Mbps' }} </td>
-        <td> {{ session['cdn'] }} </td>
-        <td> {{ session['os'] + ' | ' + session['browser'] }} </td>
+        <td> {{ cbuff_time }} </td>
         <td> {{ session['asset'] }} </td>
       </tr>
     </tbody>
@@ -40,14 +38,40 @@
 <div class="card-group container-fluid">
   <div class="card">
     <div class="card-body">
-      <h5 class="card-title">More info...</h5>
+      <h5 class="card-title">QoE info...</h5>
       <div class="card-text">
         <p><span class="font-weight-bold text-black-50">% complete: </span>{{ (session['percentWatched']|string + ' %') if session['tags']['c3.video.isLive'] == 'F' else 'Linear' }}</p>
-        <p><span class="font-weight-bold text-black-50">Rebuff : </span>{{ buff_ratio|string + ' % out of ' + session['numBuffEvts']|string + ' event' + ('s' if session['numBuffEvts'] > 1 else '') }}</p>
+        <p><span class="font-weight-bold text-black-50">Rebuffs: </span>
+          {{ buff_ratio|string + ' % out of ' + session['numBuffEvts']|string + ' event' + ('s' if session['numBuffEvts'] > 1 else '') }}
+        </p>
+        <p><span class="font-weight-bold text-black-50">Conn Induced Buff Ratio: </span>{{ cbuff_ratio|string + ' %' }}</p>
         <p><span class="font-weight-bold text-black-50">AvgBits: </span>{{ abr|string + ' Mbps' }}</p>
+        <p><span class="font-weight-bold text-black-50">EBVS: </span>{{ (session['playTimeMs'] == 0 and not session['isPlayStartFail']) }}</p>
         <p><span class="font-weight-bold text-black-50">VST: </span>{{ vst|string + ' sec' }}</p>
         <p><span class="font-weight-bold text-black-50">VSF: </span>{{ session['isPlayStartFail']|string }}</p>
-        <p><span class="font-weight-bold text-black-50">EBVS: </span>{{ (session['playTimeMs'] == 0 and not session['isPlayStartFail']) }}</p>
+        <p><span class="font-weight-bold text-black-50">VPF: </span>{{ session['isPlaybackFail']|string }}</p>
+        <p><span class="font-weight-bold text-black-50">Restarts: </span>
+          {{ vrt|string + ' sec out of ' + session['restartCount']|string + ' event' + ('s' if session['restartCount'] > 1 else '') }}
+        </p>
+        <p><span class="font-weight-bold text-black-50">avgRenQual: </span>{{ session['avgRenQual']|string + '% == 100*(rendered_FPS/encoded_FPS)'}}</p>
+        <p><span class="font-weight-bold text-black-50">hasEnded: </span>{{ session['hasEnded'] }}</p>
+        <p><span class="font-weight-bold text-black-50">VSF errors: </span>
+          {% for i in session['errors']%}
+          {{ i|string }}
+          {% endfor %}
+        </p>
+        <p><span class="font-weight-bold text-black-50">VPF errors: </span>
+          {% for i in session['playbackFailErrors']%}
+          {{ i|string }}
+          {% endfor %}
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-body">
+      <h5 class="card-title">More info...</h5>
+      <div class="card-text">
         <p><span class="font-weight-bold text-black-50">Device Operating System: </span>{{ session['os'] }}</p>
         <p><span class="font-weight-bold text-black-50">Browser Name: </span>{{ session['browser'] }}</p>
         <p><span class="font-weight-bold text-black-50">Stream URL: </span>{{ session['streamUrl'] }}</p>
@@ -55,8 +79,6 @@
         <p><span class="font-weight-bold text-black-50">ISP & ASN: </span>{{ session['isp'] + ', ' + session['asnName'] }}</p>
         <p><span class="font-weight-bold text-black-50">CDN: </span>{{ session['cdn'] }}</p>
         <p><span class="font-weight-bold text-black-50">IP: </span>{{ session['ip'] }}</p>
-        <p><span class="font-weight-bold text-black-50">avgRenQual: </span>{{ session['avgRenQual'] }}</p>
-        <p><span class="font-weight-bold text-black-50">hasEnded: </span>{{ session['hasEnded'] }}</p>
         <p><span class="font-weight-bold text-black-50">viewId: </span>{{ session['viewId'] }}</p>
       </div>
     </div>

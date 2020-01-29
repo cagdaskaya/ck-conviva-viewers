@@ -12,17 +12,21 @@
     <div class="card-body">
       <p class="card-text">
         <span class="text-muted">Assets: </span>{{ len(asset_set) }} |
-        <span class="text-muted">Play Duration: </span>{{ play_d }} |
-        <span class="text-muted">Buff Duration: </span>{{ buff_d }}
+        <span class="text-muted">Play D: </span>{{ play_d }} |
+        <span class="text-muted">Buff D: </span>{{ buff_d }} |
+        <span class="text-muted">CIBuff D: </span>{{ cbuff_d }}
       </p>
       <p class="card-text">
         <span class="text-muted">Plays: </span>{{ len(sessions) }} |
         <span class="text-muted">Buffs: </span>{{ buffs }} |
+        <span class="text-muted">EBVS: </span>{{ len(ebvs) }} |
         <span class="text-muted">
           <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='isPlayStartFail', find=True) }}">VSF: </a>
         </span>{{ len(vsfs) }} |
-        <span class="text-muted">EBVS: </span>{{ len(ebvs) }} |
-        <span class="text-muted">VPF: </span>n/a
+        <span class="text-muted">
+          <a href="{{ url_for('sessions_func', viewer_id=viewer_id, find_by='isPlaybackFail', find=True) }}">VPF: </a>
+        </span>{{ len(vpfs) }} |
+        <span class="text-muted">Restarts: </span>{{ rsts }}
       </p>
     </div>
     <div class="card-header">Device<a href="{{ url_for('sessions_func', viewer_id=viewer_id) }}"><small> [All]</small></a></div>
@@ -116,7 +120,6 @@
         <th scope="col">Buff. D.</th>
         <th scope="col">Buff. R.</th>
         <th scope="col">ABR</th>
-        <th scope="col">VSF</th>
         <th scope="col">CDN</th>
         <th scope="col">OS</th>
         <th scope="col">Asset</th>
@@ -153,6 +156,46 @@
                   <div class="card border-white">
                     <div class="card-body">
                       <p class="card-text"><span class="text-muted">VSF: </span>{{ session['isPlayStartFail']|string }}</p>
+                    </div>
+                  </div>
+                  <div class="card border-white">
+                    <div class="card-body">
+                      <p class="card-text"><span class="text-muted">VPF: </span>{{ session['isPlaybackFail']|string }}</p>
+                    </div>
+                  </div>
+                  <div class="card border-white">
+                    <div class="card-body">
+                      <p class="card-text"><span class="text-muted">VRC: </span>{{ session['restartCount']|string }}</p>
+                    </div>
+                  </div>
+                  <div class="card border-white">
+                    <div class="card-body">
+                      <p class="card-text"><span class="text-muted">VRT: </span>{{ (round(session['restartTimeMs'] / 1000, 2))|string + ' sec' }}</p>
+                    </div>
+                  </div>
+                  <div class="card border-white">
+                    <div class="card-body">
+                      <p class="card-text"><span class="text-muted">CIBT: </span>{{ (round(session['connInducedBuffTimeMs'] / 1000, 2))|string + ' sec' }}</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-group font-weight-normal">
+                  <div class="card border-white">
+                    <div class="card-body">
+                      <p class="card-text"><span class="text-muted">VSF err:</span>
+                        {% for i in session['errors']%}
+                        {{ i }}
+                        {% endfor %}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="card border-white">
+                    <div class="card-body">
+                      <p class="card-text"><span class="text-muted">VPF err:</span>
+                        {% for i in session['playbackFailErrors']%}
+                        {{ i }}
+                        {% endfor %}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -215,7 +258,6 @@
         <td> {{ prettify_time(session['buffTimeMs']) }} </td>
         <td> {{ (round(100 * (session['buffTimeMs'] / (session['playTimeMs'] + session['buffTimeMs'])), 2)|string + ' % | ' + session['numBuffEvts']|string) if (session['playTimeMs'] + session['buffTimeMs']) > 0 else 'no playback' }} </td>
         <td> {{ round(session['avgBitrateKbps'] / 1024, 2)|string + ' Mbps' }} </td>
-        <td> {{ session.get('isPlayStartFail') }} </td>
         <td> {{ session['cdn'] }} </td>
         <td> {{ session['os'] }} </td>
         <td> {{ session['asset'] }} </td>
