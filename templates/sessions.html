@@ -175,6 +175,11 @@
                   </div>
                   <div class="card border-white">
                     <div class="card-body">
+                      <p class="card-text"><span class="text-muted">BuffT: </span>{{ (round(session['buffTimeMs'] / 1000, 2))|string + ' sec' }}</p>
+                    </div>
+                  </div>
+                  <div class="card border-white">
+                    <div class="card-body">
                       <p class="card-text"><span class="text-muted">CIBT: </span>{{ (round(session['connInducedBuffTimeMs'] / 1000, 2))|string + ' sec' }}</p>
                     </div>
                   </div>
@@ -184,7 +189,7 @@
                     <div class="card-body">
                       <p class="card-text"><span class="text-muted">VSF err:</span>
                         {% for i in session['errors']%}
-                        {{ i }}
+                        {{ i }}<br>
                         {% endfor %}
                       </p>
                     </div>

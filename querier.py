@@ -8,10 +8,9 @@ import json
 # credentials = input('Conviva username: ') + ':' + input('Conviva password: ')
 # ***REMOVED*** base64.b64encode(bytes(credentials, 'utf-8')).decode('ascii')
 ***REMOVED***'
-headers = {
-    'Cache-Control': 'no-cache',
-    'Authorization': f'Basic {encoded}'
-    }
+headers = {'Cache-Control': 'no-cache', 'Authorization': f'Basic {encoded}'}
+***REMOVED***' # fix later
+headers_go = {'Cache-Control': 'no-cache', 'Authorization': f'Basic {encoded_go}'} # fix later
 
 
 def accounts_query():
@@ -22,8 +21,9 @@ def accounts_query():
     related = {}
     url = "https://api.conviva.com/insights/2.4/accounts.json"
     response = json.loads(requests.request("GET", url, headers=headers).text)['accounts']
+    response_go = json.loads(requests.request("GET", url, headers=headers_go).text)['accounts'] # fix later
     related['NowTV'] = response['c3.BSkyB-NowTV']
-    related['SkyGo'] = response['c3.BSkyB']
+    related['SkyGo'] = response_go['c3.BSkyB'] # fix later
     return related
 
 
@@ -47,6 +47,10 @@ def api_query(viewer_id):
             'account': v
         }
         response = requests.request('GET', url, headers=headers, params=querystring)
+        if k == 'NowTV': # fix later
+            response = requests.request('GET', url, headers=headers, params=querystring) # fix later
+        elif k == 'SkyGo': # fix later
+            response = requests.request('GET', url, headers=headers_go, params=querystring) # fix later
         sessions_list = json.loads(response.text)['sessions']  # list
         if sessions_list:
             sessions_dict = {n: s for n, s in enumerate(sessions_list)}  # dict
