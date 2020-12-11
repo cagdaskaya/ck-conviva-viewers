@@ -42,7 +42,7 @@ def sessions_func(viewer_id):
     asset_set = v_setter(session_list, 'asset')
     vsfs = [i for i in v_lister(session_list, 'isPlayStartFail') if i]
     vpfs = [i for i in v_lister(session_list, 'isPlaybackFail') if i]
-    ebvs = [d['asn'] for d in session_list if (d['playTimeMs'] == 0 and not d['isPlayStartFail'])]
+    ebvs = [d for d in session_list if (d['playTimeMs'] == 0 and not d['isPlayStartFail'])]
     play_d = prettify_time(v_adder(session_list, 'playTimeMs'))
     buff_d = prettify_time(v_adder(session_list, 'buffTimeMs'))
     cbuff_d = prettify_time(v_adder(session_list, 'connInducedBuffTimeMs'))
