@@ -4,9 +4,9 @@ import json
 from decouple import config
 
 '''
-Create a .env file on app root directory and your API Client Credentials per Conviva account.
+Create a `.env` file on app root directory and add your API Client Credentials per Conviva account:
 ACCOUNT=<ClientID>:<ClientSecret>
-NOWTV=nowclient:nowsecret
+e.g. NOWTV=your-now-api-id:your-now-secret
 Then, decide whether to comment/uncomment api_secrets dictionary key-value pairs accordingly. 
 '''
 api_secrets = {
