@@ -3,7 +3,12 @@ import requests
 import json
 from decouple import config
 
-
+'''
+Create a .env file on app root directory and your API Client Credentials per Conviva account.
+ACCOUNT=<ClientID>:<ClientSecret>
+NOWTV=nowclient:nowsecret
+Then, decide whether to comment/uncomment api_secrets dictionary key-value pairs accordingly. 
+'''
 api_secrets = {
     'c3.BSkyB': config('SKYGO'),
     'c3.BSkyB-NowTV': config('NOWTV'),
