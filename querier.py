@@ -1,60 +1,57 @@
 import base64
 import requests
 import json
-
-# username = input('Conviva username: ')
-# password = input('Conviva password: ')
-# credentials = username + ':' + password
-# credentials = input('Conviva username: ') + ':' + input('Conviva password: ')
-# encoded = base64.b64encode(bytes(credentials, 'utf-8')).decode('ascii')
-encoded = 'WExCZkVpUm9IRDg3ZlF1a3ExTFVLUDo4YVZ2aFFHZkV1N3VqZFNkbVV6b0pNMm16RjNTMVBoN3NXZU1xQXdLNFRXVA=='
-headers = {'Cache-Control': 'no-cache', 'Authorization': f'Basic {encoded}'}
-encoded_go = 'NU1YcWRrY2ZoaUQzSDhnTnBzUk1HMjoza2pTQWJNR2pyemEzRnUxOUdyTFU5a2FLaTRQaHMyZXNwTVNpdG5BQlk0Vw==' # fix later
-headers_go = {'Cache-Control': 'no-cache', 'Authorization': f'Basic {encoded_go}'} # fix later
+from decouple import config
 
 
-def accounts_query():
-    """
-    Sends an https request for NowTV and SkyGo account IDs.
-    :return:    dictionary of platform names as key and account ids as values
-    """
-    related = {}
-    url = "https://api.conviva.com/insights/2.4/accounts.json"
-    response = json.loads(requests.request("GET", url, headers=headers).text)['accounts']
-    response_go = json.loads(requests.request("GET", url, headers=headers_go).text)['accounts'] # fix later
-    related['NowTV'] = response['c3.BSkyB-NowTV']
-    related['SkyGo'] = response_go['c3.BSkyB'] # fix later
-    return related
-
-
-accounts = accounts_query()
-
+api_secrets = {
+    'c3.BSkyB': config('SKYGO'),
+    'c3.BSkyB-NowTV': config('NOWTV'),
+    'c3.BSkyB-OTTI': config('NOWIE'),
+    'c3.SkyIP-T01': config('SOIP_UK'),
+    'c3.SkyIP-T02': config('SOIP_DE'),
+    'c3.SkyIP-T03': config('SOIP_IT'),
+    # 'c3.BSkyB-Test': config('SKYGO_TEST'),
+    # 'c3.BSkyB-NowTV-Test': config('NOWTV_TEST'),
+    # 'c3.SkyIP-T01-Test': config('SOIP_UK_TEST'),
+    # 'c3.SkyIP-T02-Test': config('SOIP_DE_TEST'),
+    # 'c3.SkyIP-T03-Test': config('SOIP_IT_TEST'),
+    'c3.BSkyB-SkyStore': config('SKYSTORE')
+}
 
 def api_query(viewer_id):
     """
-    Sends an https request with viewer ID as a search item. Uses accounts dictionary to search as a loop.
+    Sends an https request with viewer ID as a search item.
     Feature update: take login parameters and generate auth header with Base64.
     :param viewer_id: string
     :return:    2 item tuple with dictionary of sessions and platform name as string.
                 if there are no sessions empty dictionary and no as string
     """
-    # accounts = accounts_query()
-    global accounts
-    for k, v in accounts.items():
-        url = 'https://api.conviva.com/insights/2.1/viewer/views.json'
+    global api_secrets
+    for account, secret in api_secrets.items():
+        accounts_url = 'https://api.conviva.com/insights/2.4/accounts.json'
+        views_url = 'https://api.conviva.com/insights/2.1/viewer/views.json'
+        basic_auth = base64.b64encode(bytes(secret, 'utf-8')).decode('ascii')
+        headers = {
+            'Cache-Control': 'no-cache',
+            'Authorization': f'Basic {basic_auth}'
+        }
+        account_id = list(
+            json.loads(
+                requests.request('GET', accounts_url, headers=headers).text
+            )['accounts'].values()
+        )[0]
         querystring = {
             'viewer_id': viewer_id,
-            'account': v
+            'account': account_id
         }
-        response = requests.request('GET', url, headers=headers, params=querystring)
-        if k == 'NowTV': # fix later
-            response = requests.request('GET', url, headers=headers, params=querystring) # fix later
-        elif k == 'SkyGo': # fix later
-            response = requests.request('GET', url, headers=headers_go, params=querystring) # fix later
-        sessions_list = json.loads(response.text)['sessions']  # list
+        response = requests.request('GET', views_url, headers=headers, params=querystring)
+        try:
+            sessions_list = json.loads(response.text)['sessions']  # list
+        except Exception:
+            sessions_list = []
         if sessions_list:
             sessions_dict = {n: s for n, s in enumerate(sessions_list)}  # dict
-            return sessions_dict, k
+            return sessions_dict, account
     else:
         return {}, 'no'
-

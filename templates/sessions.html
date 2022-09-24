@@ -133,7 +133,7 @@
             <div class="btn-group">
               <button type="button" class="btn btn-link">
                 <a href="{{ url_for('session_function', viewer_id=viewer_id, session_id=session_id) }}">
-                  {{ (session['streamUrl'].split('c3.ri=')[1]) if len(session['streamUrl'].split('c3.ri=')) > 1 else 'no c3.ri' }}
+                  {{ (session['streamUrl'].split('c3.ri=')[1].split('&')[0]) if len(session['streamUrl'].split('c3.ri=')) > 1 else 'no c3.ri' }}
                 </a>
               </button>
               <button type="button" class="btn btn-link dropdown-toggle dropdown-toggle-split" id="dropdownMenuLink{{session_id}}"

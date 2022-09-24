@@ -19,6 +19,3 @@
 #
 # print(encoded)
 # print(data.decode("utf-8"))
-
-
-

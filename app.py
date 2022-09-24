@@ -69,7 +69,7 @@ def session_function(viewer_id, session_id):
     """
     session = sessions.get(session_id)
     tags = session['tags']
-    request_id = (session['streamUrl'].split('c3.ri=')[1]) if len(session['streamUrl'].split('c3.ri=')) > 1 else 'no c3.ri'
+    request_id = (session['streamUrl'].split('c3.ri=')[1].split('&')[0]) if len(session['streamUrl'].split('c3.ri=')) > 1 else 'no c3.ri'
     start_time = prettify_date(session['startTimeMs'])
     end_time = prettify_date(session['startTimeMs'] + session['joinTimeMs'] + session['playTimeMs'] + session['buffTimeMs'])
     play_time = prettify_time(session['playTimeMs'])
