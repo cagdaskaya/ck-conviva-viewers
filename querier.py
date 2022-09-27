@@ -18,6 +18,7 @@ api_secrets = {
     'c3.SkyIP-T03': config('SOIP_IT'),
     # 'c3.BSkyB-Test': config('SKYGO_TEST'),
     # 'c3.BSkyB-NowTV-Test': config('NOWTV_TEST'),
+    # 'c3.BSkyB-OTTI-Test': config('NOWIE_TEST'), # returns "400 Bad request"
     # 'c3.SkyIP-T01-Test': config('SOIP_UK_TEST'),
     # 'c3.SkyIP-T02-Test': config('SOIP_DE_TEST'),
     # 'c3.SkyIP-T03-Test': config('SOIP_IT_TEST'),
