@@ -3,12 +3,17 @@ import requests
 import json
 from decouple import config
 
+
 '''
-Create a `.env` file on app root directory and add your API Client Credentials per Conviva account:
-ACCOUNT=<ClientID>:<ClientSecret>
-e.g. NOWTV=your-now-api-id:your-now-secret
-Then, decide whether to comment/uncomment api_secrets dictionary key-value pairs accordingly. 
+WARNING:
+Create a file named `.env` on application root directory
+ with your API Client Credentials per Conviva account
+ as `ACCOUNT=<ClientID>:<ClientSecret>`
+ e.g. NOWTV=your-now-api-id:your-now-secret
+Then, decide whether to comment/uncomment items in
+ api_secrets dictionary below accordingly.
 '''
+
 api_secrets = {
     'c3.BSkyB': config('SKYGO'),
     'c3.BSkyB-NowTV': config('NOWTV'),
@@ -25,13 +30,15 @@ api_secrets = {
     'c3.BSkyB-SkyStore': config('SKYSTORE')
 }
 
+
 def api_query(viewer_id):
     """
     Sends an https request with viewer ID as a search item.
     Feature update: take login parameters and generate auth header with Base64.
     :param viewer_id: string
-    :return:    2 item tuple with dictionary of sessions and platform name as string.
-                if there are no sessions empty dictionary and no as string
+    :return:
+        2 item tuple with dictionary of sessions and platform name as string.
+        if there are no sessions empty dictionary and no as string
     """
     global api_secrets
     for account, secret in api_secrets.items():
@@ -51,7 +58,9 @@ def api_query(viewer_id):
             'viewer_id': viewer_id,
             'account': account_id
         }
-        response = requests.request('GET', views_url, headers=headers, params=querystring)
+        response = requests.request(
+            'GET', views_url, headers=headers, params=querystring
+        )
         try:
             sessions_list = json.loads(response.text)['sessions']  # list
         except Exception:

@@ -2,7 +2,8 @@ import datetime
 
 
 def prettify_date(epoch):
-    return datetime.datetime.fromtimestamp(epoch / 1000, datetime.timezone.utc).strftime("%d-%m-%Y %H:%M:%S %Z")
+    return datetime.datetime.fromtimestamp(
+        epoch / 1000, datetime.timezone.utc).strftime("%d-%m-%Y %H:%M:%S %Z")
 
 
 def prettify_time(epoch):
@@ -26,4 +27,3 @@ def calc_percentages(lod, target):
     fl = v_lister(lod, target)
     fs = v_setter(lod, target)
     return [(round((100 * fl.count(i) / len(fl))), i) for i in fs]
-
